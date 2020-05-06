@@ -1,1 +1,0 @@
-"C:\Program Files (x86)\Warcraft III\Frozen Throne.exe" -window
