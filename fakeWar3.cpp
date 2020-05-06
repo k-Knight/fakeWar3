@@ -52,9 +52,8 @@ int main() {
             std::istreambuf_iterator<char>()
         );
 
-        char parameter[] = "\" -window";
+        char parameter[] = " -window";
         config.insert(config.end(), std::begin(parameter), std::end(parameter));
-        config.insert(config.begin(), '"');
 
         return launchGame(config.data());
     } else {
