@@ -22,5 +22,5 @@ The configuration file **fakeWar3.cfg** must contain one and only one line speci
 
 ## Notes
 
-- This software was only tested for *Warcraft III: Frozen Throne".
+- This software was only tested for *Warcraft III: Frozen Throne*.
 - This software does not support multiple displays (the resulting window should occupy the main display).
