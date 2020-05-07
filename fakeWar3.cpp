@@ -1,12 +1,35 @@
 #include <windows.h>
 
-#include <iostream>
 #include <vector>
 #include <fstream>
+#include <algorithm>
 
 #define MAX_COMMAND_SIZE 1024
 
-// TODO: add multi-monitor support
+#define COMPILE_MULTIMON_STUBS
+#include "multimon.h"
+
+void fitWindowToMonitor(HWND hWnd) {
+    RECT rc;
+    HMONITOR hMonitor;
+    MONITORINFO mi;
+
+    GetWindowRect(hWnd, &rc);
+    hMonitor = MonitorFromWindow(hWnd, MONITOR_DEFAULTTONULL);
+    if (hMonitor) {
+        mi.cbSize = sizeof(mi);
+        GetMonitorInfo(hMonitor, &mi);
+        rc = mi.rcMonitor;
+    }
+    else {
+        rc = {0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN)};
+    }
+
+    rc.right = std::abs(rc.right - rc.left);
+    rc.bottom = std::abs(rc.bottom - rc.top);
+
+    MoveWindow(hWnd, rc.left, rc.top, rc.right, rc.bottom, true);
+}
 
 void setBorderlessWindowStyle() {
     // wait for main window to be created
@@ -21,9 +44,7 @@ void setBorderlessWindowStyle() {
     wndStyle &= ~(WS_CAPTION | WS_SIZEBOX);
     SetWindowLongPtrA(hWnd, GWL_STYLE, wndStyle);
 
-    int cxScreen = GetSystemMetrics(SM_CXSCREEN);
-    int cyScreen = GetSystemMetrics(SM_CYSCREEN);
-    MoveWindow(hWnd, 0, 0, cxScreen, cyScreen, true);
+    fitWindowToMonitor(hWnd);
 }
 
 int launchGame(char *commandLine) {

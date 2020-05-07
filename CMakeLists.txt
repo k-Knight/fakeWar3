@@ -1,8 +1,9 @@
 cmake_minimum_required(VERSION 3.16)
 project(fakeWar3)
 
+set(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -static")
 if(CMAKE_BUILD_TYPE MATCHES Release)
-    set(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -mwindows -static")
+    set(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -mwindows")
 endif()
 
 file(GLOB SOURCE_FILES
