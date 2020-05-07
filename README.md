@@ -1,4 +1,4 @@
-# FakeW3
+# FakeWar3
 
 Used to bypass around *GameRanger* limitation of not being able to launch *Warcraft III* in windowed mode.
 
