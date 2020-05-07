@@ -5,7 +5,6 @@
 
 #include <vector>
 #include <fstream>
-#include <algorithm>
 
 static const char windowParam[] = " -window";
 static char defaultPath[] = R"("C:\Games\Warcraft III 1.26\realWar3.exe" -window)";
@@ -25,8 +24,8 @@ void fitWindowToMonitor(HWND hWnd) {
             rc = mi.rcMonitor;
     }
 
-    rc.right = std::abs(rc.right - rc.left);
-    rc.bottom = std::abs(rc.bottom - rc.top);
+    rc.right = rc.right - rc.left;
+    rc.bottom = rc.bottom - rc.top;
 
     MoveWindow(hWnd, rc.left, rc.top, rc.right, rc.bottom, true);
 }
