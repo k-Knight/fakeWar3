@@ -1,28 +1,28 @@
 #include <windows.h>
 
+#define COMPILE_MULTIMON_STUBS
+#include <multimon.h>
+
 #include <vector>
 #include <fstream>
 #include <algorithm>
 
-#define MAX_COMMAND_SIZE 1024
-
-#define COMPILE_MULTIMON_STUBS
-#include "multimon.h"
+static const char windowParam[] = " -window";
+static char defaultPath[] = R"("C:\Games\Warcraft III 1.26\realWar3.exe" -window)";
 
 void fitWindowToMonitor(HWND hWnd) {
     RECT rc;
     HMONITOR hMonitor;
     MONITORINFO mi;
 
+    rc = { 0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN) };
+
     GetWindowRect(hWnd, &rc);
     hMonitor = MonitorFromWindow(hWnd, MONITOR_DEFAULTTONULL);
     if (hMonitor) {
         mi.cbSize = sizeof(mi);
-        GetMonitorInfo(hMonitor, &mi);
-        rc = mi.rcMonitor;
-    }
-    else {
-        rc = {0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN)};
+        if (GetMonitorInfo(hMonitor, &mi))
+            rc = mi.rcMonitor;
     }
 
     rc.right = std::abs(rc.right - rc.left);
@@ -50,7 +50,7 @@ void setBorderlessWindowStyle() {
 int launchGame(char *commandLine) {
     STARTUPINFO startupInfo = { 0 };
     PROCESS_INFORMATION processInformation = { 0 };
-    startupInfo.cb = sizeof( startupInfo );
+    startupInfo.cb = sizeof(startupInfo);
 
     if(CreateProcess(NULL, commandLine, NULL, NULL, FALSE, 0, NULL, NULL, &startupInfo, &processInformation)) {
         setBorderlessWindowStyle();
@@ -73,12 +73,10 @@ int main() {
             std::istreambuf_iterator<char>()
         );
 
-        char parameter[] = " -window";
-        config.insert(config.end(), std::begin(parameter), std::end(parameter));
+        config.insert(config.end(), std::begin(windowParam), std::end(windowParam));
 
         return launchGame(config.data());
     } else {
-        char defaultPath[] = R"("C:\Games\Warcraft III 1.26\realWar3.exe" -window)";
         return launchGame(defaultPath);
     }
 }
