@@ -5,9 +5,11 @@
 
 #include <vector>
 #include <fstream>
+#include <filesystem>
+#include <iostream>
 
 static const char windowParam[] = " -window";
-static char defaultPath[] = R"("C:\Games\Warcraft III 1.26\realWar3.exe" -window)";
+static char defaultConfig[] = R"("C:\Games\Warcraft III 1.26\realWar3.exe" -window)";
 
 void fitWindowToMonitor(HWND hWnd) {
     RECT rc;
@@ -65,17 +67,43 @@ int launchGame(char *commandLine) {
     }
 }
 
-int main() {
-    if (std::ifstream configFile("fakeWar3.cfg"); configFile.is_open()) {
-        std::vector<char> config(
+std::filesystem::path getExecutablePath() {
+    std::vector<wchar_t> path(MAX_PATH);
+    int length = GetModuleFileNameW(NULL, path.data(), path.size());
+    if (length >= path.size()) {
+        path.resize(length);
+    }
+
+    GetModuleFileNameW(NULL, path.data(), path.size());
+    return path.data();
+}
+
+int main(int argc, char *argv[]) {
+    std::vector<char> config;
+    std::filesystem::path configPath = getExecutablePath();
+
+    configPath.remove_filename();
+    configPath /= "fakeWar3.cfg";
+
+    if (std::ifstream configFile(configPath); configFile.is_open()) {
+        config = std::vector<char>(
             (std::istreambuf_iterator<char>(configFile)),
             std::istreambuf_iterator<char>()
         );
 
-        config.insert(config.end(), std::begin(windowParam), std::end(windowParam));
-
-        return launchGame(config.data());
+        config.insert(config.end(), std::begin(windowParam), std::end(windowParam) - 1);
     } else {
-        return launchGame(defaultPath);
+        std::cout << "Config file not found. Using default path for executable\n";
+        config.insert(config.end(), std::begin(defaultConfig), std::end(defaultConfig) - 1);
     }
+
+    for (int i = 1; i < argc; i++) {
+        size_t length = strlen(argv[i]);
+        config.push_back(' ');
+        config.insert(config.end(), argv[i], argv[i] + length);
+    }
+
+    config.push_back('\0');
+    std::cout << "Launching command :: ["<< config.data() << "]\n";
+    return launchGame(config.data());
 }
