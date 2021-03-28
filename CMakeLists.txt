@@ -11,8 +11,8 @@ file(GLOB SOURCE_FILES
 )
 
 set(APP war3)
-
 add_executable(${APP} ${SOURCE_FILES})
+target_compile_features(${APP} PRIVATE cxx_std_17)
 
 set_target_properties(
     ${APP} PROPERTIES

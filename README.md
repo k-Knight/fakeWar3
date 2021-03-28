@@ -12,15 +12,26 @@ In order to make it work with GameRanger one has to navigate to the *Warcraft II
 
 ## Configuration
 
-The configuration file **fakeWar3.cfg** must contain one and only one line specifying the path to the real *Warcraft III* executable and any parameters you want (*do **not** include* ``-window`` *parameter, as it is added automatically*). **Example:**
+The configuration file **fakeWar3.cfg** can contain the following settings:
+* `Location` - text, path to the real *Warcraft III* executable
+* `Windowed` - true or false, tells to start *Warcraft III* in windowed mode
+* `Borderless` - true or false, tells to make *Warcraft III* window borderless
+* `Resolution` - text, should be `auto` or a custom resolution in format `"<number>x<number>"`
+* `Arguments` - text, other arguments that should be passed to *Warcraft III*, must be separated by space
+
+Please note, that the file **MUST HAVE** an empty line at the end of the file. Example:
 
 ```
-"C:\Games\Warcraft III 1.26\realWar3.exe"
+Location="C:\Games\Warcraft III 1.26\realWar3.exe"
+Windowed=TRUE
+Borderless=FALSE
+Resolution="auto"
+Arguments=""
+
 ```
 
-**Please remember** to wrap the path with double quotes **``"``**, as shown in the example.
+**Please remember** to wrap the path and all the other text settings with double quotes (**``"``**), as shown in the example.
 
 ## Notes
 
 - This software was only tested for *Warcraft III: Frozen Throne*.
-- This software does not support multiple displays (the resulting window should occupy the main display).
